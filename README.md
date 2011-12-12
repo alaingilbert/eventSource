@@ -10,8 +10,4 @@ export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig"
 npm install zmq
 ```
 
-```
-npm install express
-```
-
 Run the server with `node server.js` or `node server.js 8080` or `node server.js 8080 127.0.0.1`
