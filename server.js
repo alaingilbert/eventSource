@@ -7,6 +7,11 @@ var http       = require('http')
   , ZMQ_STRING = 'tcp://127.0.0.1:60000'
   , sock       = zmq.socket('sub');
 
+app.configure(function(){
+   app.set('views', __dirname+'/views');
+   app.set('view engine', 'jade');
+   app.set('view options', { layout: false });
+});
 
 sock.connect(ZMQ_STRING);
 sock.subscribe('room');
@@ -34,11 +39,7 @@ app.get('/events', function (req, res) {
 
 
 app.get('/', function (req, res) {
-   fs.readFile(__dirname+'/templates/index.html', function (err, file) {
-      res.writeHead(200, {'Content-Type': 'text/html'});
-      res.write(file, 'binary');
-      res.end()
-   });
+   res.render('index.jade', {});
 });
 
 

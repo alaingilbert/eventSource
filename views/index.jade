@@ -1,0 +1,13 @@
+extends layout
+
+block content
+   p My template
+   script(type='text/javascript')
+      document.addEventListener("DOMContentLoaded", function() {
+      var evtSrc = new EventSource('/events');
+
+      evtSrc.addEventListener('message', function (evt) {
+         console.log('DATA:', evt.data);
+      }, false);
+
+      });
