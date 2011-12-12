@@ -29,10 +29,8 @@ app.get('/events', function (req, res) {
                       , 'Cache-Control' : 'no-cache'
                       , 'Connection'    : 'keep-alive'
                       });
-   console.log('Client connect');
 
    var callback = function (data) {
-      console.log('Send data');
       res.write('data: ' + data.toString() + '\n\n');
    };
 
@@ -40,7 +38,6 @@ app.get('/events', function (req, res) {
 
    res.socket.on('close', function () {
       sock.removeListener('message', callback);
-      console.log('Client leave');
    });
 });
 
