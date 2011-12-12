@@ -1,7 +1,13 @@
 var http = require('http')
   , fs   = require('fs')
+  , zmq  = require('zmq')
   , PORT = process.argv[2] || 8080
-  , HOST = process.argv[3] || '127.0.0.1';
+  , HOST = process.argv[3] || '127.0.0.1'
+  , sock = zmq.socket('sub');
+
+
+sock.connect('tcp://127.0.0.1:60000');
+sock.subscribe('room');
 
 
 http.createServer(function (req, res) {
@@ -12,14 +18,16 @@ http.createServer(function (req, res) {
                          });
       console.log('Client connect');
 
-      var t = setInterval(function () {
+      var callback = function (data) {
          console.log('Send data');
-         res.write('data: DATA\n\n');
-      }, 1000);
+         res.write('data: '+data.toString()+'\n\n');
+      };
+
+      sock.on('message', callback);
 
       res.socket.on('close', function () {
+         sock.removeListener('message', callback);
          console.log('Client leave');
-         clearInterval(t);
       });
 
    } else {
