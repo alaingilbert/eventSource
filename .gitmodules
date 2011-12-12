@@ -1,0 +1,6 @@
+[submodule "express"]
+	path = express
+	url = https://github.com/visionmedia/express.git
+[submodule "zeromq.node"]
+	path = zeromq.node
+	url = https://github.com/JustinTulloss/zeromq.node.git
