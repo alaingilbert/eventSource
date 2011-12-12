@@ -1,16 +1,19 @@
-var http = require('http')
-  , fs   = require('fs')
-  , zmq  = require('zmq')
-  , PORT = process.argv[2] || 8080
-  , HOST = process.argv[3] || '127.0.0.1'
-  , sock = zmq.socket('sub');
+var http       = require('http')
+  , fs         = require('fs')
+  , zmq        = require('zmq')
+  , PORT       = process.argv[2] || 8080
+  , HOST       = process.argv[3] || '127.0.0.1'
+  , ZMQ_STRING = 'tcp://127.0.0.1:60000'
+  , sock       = zmq.socket('sub');
 
 
-sock.connect('tcp://127.0.0.1:60000');
+sock.connect(ZMQ_STRING);
 sock.subscribe('room');
 
 
 http.createServer(function (req, res) {
+   console.log(new Date().toTimeString()+' -- '+req.method+' '+req.url);
+
    if (req.url == '/events') {
       res.writeHead(200, { 'Content-Type'  : 'text/event-stream'
                          , 'Cache-Control' : 'no-cache'
@@ -30,9 +33,16 @@ http.createServer(function (req, res) {
          console.log('Client leave');
       });
 
-   } else {
-      res.writeHead(200, {'Content-Type': 'text/html'});
-      res.write(fs.readFileSync(__dirname + '/templates/index.html'));
-      res.end()
+   } else if (req.url == '/') {
+      fs.readFile(__dirname+'/templates/index.html', function (err, file) {
+         res.writeHead(200, {'Content-Type': 'text/html'});
+         res.write(file, 'binary');
+         res.end()
+      });
    }
 }).listen(PORT, HOST);
+
+
+console.log('Server listening on '+HOST+':'+PORT);
+console.log(new Date().toTimeString());
+console.log('----------------------------------');
